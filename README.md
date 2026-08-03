@@ -113,6 +113,5 @@ canny-license-plate-detection/
 ├── 02-vhdl-fpga-accelerator/
 ├── 03-uvm-verification/
 ├── 04-embedded-linux/
-├── .gitignore
 └── README.md
 
