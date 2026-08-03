@@ -1,0 +1,14 @@
+/ {
+    amba_pl {
+        compatible = "simple-bus";
+        #address-cells = <1>;
+        #size-cells = <1>;
+        ranges;
+
+        canny_axi_0: canny_axi@43c00000 {
+            compatible = "xlnx,canny-axi-1.0";
+            reg = <0x43c00000 0x00010000>,
+                  <0x43c80000 0x00080000>;
+        };
+    };
+};
