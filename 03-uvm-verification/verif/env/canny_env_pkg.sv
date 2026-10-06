@@ -15,11 +15,11 @@ package canny_env_pkg;
   import canny_config_pkg::*;
 
 
-  // Redosled je vazan:
+  // Include order follows class dependencies:
   //
   // 1. scoreboard
   // 2. coverage
-  // 3. environment koji koristi obe komponente
+  // 3. environment using both components
 
   `include "canny_scoreboard.sv"
   `include "canny_coverage.sv"
