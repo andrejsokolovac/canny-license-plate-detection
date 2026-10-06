@@ -1,32 +1,32 @@
 # regression.tcl
 #
-# Automatski pokrece Canny UVM testove preko:
+# Automatically runs Canny UVM tests using:
 #
 #   +UVM_TESTNAME
 #
-# Dostupne grupe testova:
+# Available test groups:
 #
-#   real       - dve realne slike
-#   synthetic  - crna i pola crna/pola bela slika
-#   all        - svi testovi
+#   real       - two real images
+#   synthetic  - black and half-black/half-white images
+#   all        - all tests
 #
-# Pokretanje svih testova:
+# Run all tests:
 #
 #   source scripts/regression.tcl
 #
-# Pokretanje samo testova sa realnim slikama:
+# Run only tests with real images:
 #
 #   set CANNY_SUITE real
 #   source scripts/regression.tcl
 #
-# Pokretanje samo sintetickih testova:
+# Run only synthetic tests:
 #
 #   set CANNY_SUITE synthetic
 #   source scripts/regression.tcl
 
 
 # ============================================================
-# Liste testova
+# Test lists
 # ============================================================
 
 set real_tests {
@@ -47,10 +47,10 @@ set all_tests [
 
 
 # ============================================================
-# Izbor grupe testova
+# Test-group selection
 #
-# Ako CANNY_SUITE nije prethodno postavljen,
-# podrazumevano se pokrecu svi testovi.
+# If CANNY_SUITE is not set beforehand,
+# podrazumevano se pokrecu all tests.
 # ============================================================
 
 if {
@@ -110,10 +110,10 @@ if {
 
 
 # ============================================================
-# Putanje
+# Paths
 #
-# Skripta se pokrece iz otvorenog Vivado projekta.
-# DIRECTORY svojstvo vraca glavni direktorijum projekta.
+# The script is run from an open Vivado project.
+# The DIRECTORY property returns the project root directory.
 # ============================================================
 
 set project_dir [
@@ -135,7 +135,7 @@ set sim_xsim_dir [
 ]
 
 
-# XSim coverage baza koja se generise tokom simulacije.
+# XSim coverage database generated during simulation.
 
 set cov_source [
     file join \
@@ -144,7 +144,7 @@ set cov_source [
 ]
 
 
-# Glavni direktorijum za rezultate regresije.
+# Main directory for regression results.
 
 set regression_root_dir [
     file join \
@@ -189,7 +189,7 @@ set logs_dir [
 
 
 # ============================================================
-# Brisanje rezultata prethodne regresije
+# Remove previous regression results
 # ============================================================
 
 if {
@@ -230,7 +230,7 @@ puts ""
 
 
 # ============================================================
-# Pokretanje testova
+# Run tests
 # ============================================================
 
 foreach test_name $tests {
@@ -242,13 +242,13 @@ foreach test_name $tests {
     puts ""
 
 
-    # Zatvaranje prethodne simulacije, ako je otvorena.
+    # Close the previous simulation if it is still open.
 
     close_sim -quiet
 
 
-    # Brisanje prethodne XSim coverage baze kako se ne bi
-    # slucajno sacuvali podaci starog testa.
+    # Remove the previous XSim coverage database to avoid
+    # accidentally preserving data from an earlier test.
 
     if {
         [file exists $cov_source]
@@ -261,10 +261,10 @@ foreach test_name $tests {
     }
 
 
-    # Postavljanje imena UVM testa.
+    # Set the UVM test name.
     #
-    # Ovo automatski menja vrednost koja se inace rucno
-    # postavlja u:
+    # This updates the value that would otherwise be set manually
+    # in:
     #
     # Simulation Settings
     # xsim.simulate.xsim.more_options
@@ -277,14 +277,14 @@ foreach test_name $tests {
         ]
 
 
-    # Pokretanje Behavioral Simulation.
+    # Start Behavioral Simulation.
 
     launch_simulation
 
 
-    # Simulacija se izvrsava dok UVM test ne zavrsi i pozove
-    # $finish. Na ovaj nacin ne zavisimo od unapred zadatog
-    # simulacionog vremena.
+    # Run the simulation until the UVM test completes and calls
+    # $finish, avoiding dependence on a predefined
+    # simulation duration.
 
     run all
 
@@ -295,7 +295,7 @@ foreach test_name $tests {
 
 
     # ========================================================
-    # Cuvanje simulation log fajla
+    # Save simulation log
     # ========================================================
 
     set simulate_log [
@@ -334,7 +334,7 @@ foreach test_name $tests {
 
 
     # ========================================================
-    # Cuvanje coverage baze pojedinacnog testa
+    # Save per-test coverage database
     # ========================================================
 
     if {
@@ -381,7 +381,7 @@ foreach test_name $tests {
 
 
         # ====================================================
-        # Generisanje pojedinacnog HTML coverage report-a
+        # Generate per-test HTML coverage report
         # ====================================================
 
         set single_report_dir [
@@ -461,7 +461,7 @@ foreach test_name $tests {
 
 
 # ============================================================
-# Zavrsena regresija
+# Regression complete
 # ============================================================
 
 puts ""
@@ -484,9 +484,9 @@ puts ""
 
 
 # ============================================================
-# Generisanje zbirnog coverage report-a
+# Generate merged coverage report
 #
-# Ovaj deo se izvrsava samo ako postoje coverage baze.
+# This section runs only when coverage databases exist.
 # ============================================================
 
 set xcrg_args [
@@ -591,7 +591,7 @@ puts "================================================"
 puts ""
 
 
-# Brisanje promenljive kako pri sledecem pokretanju ne bi
-# ostao prethodni izbor grupe testova.
+# Clear the variable so the next run does not
+# reuse the previous test-group selection.
 
 unset CANNY_SUITE
