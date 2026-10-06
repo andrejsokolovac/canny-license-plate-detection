@@ -13,22 +13,22 @@ int sc_main(int argc, char* argv[])
         return 1;
     }
 
-    // Kreiranje modula
+    // Create modules
     BRAM bram("BRAM");
     Interconnect interconnect("INTERCONNECT");
     Hard hard("HARD");
     Cpu cpu("CPU", argv, argc, &hard);
     
-    // Povezivanje CPU-a sa interconnect-om
+    // Connect the CPU to the interconnect
     cpu.interconnect_socket.bind(interconnect.cpu_socket);
 
-    // Povezivanje interconnect-a sa BRAM-om
+    // Connect the interconnect to BRAM
     interconnect.bram_socket.bind(bram.cpu_socket);
 
-    // Povezivanje interconnect-a sa HARD-om
+    // Connect the interconnect to the hardware model
     interconnect.hard_socket.bind(hard.interconnect_socket);
 
-    // Povezivanje HARD modula direktno na BRAM
+    // Connect the hardware model directly to BRAM
     hard.bram_socket.bind(bram.hard_socket);
 
     std::cout << "Starting SystemC simulation..." << std::endl;
