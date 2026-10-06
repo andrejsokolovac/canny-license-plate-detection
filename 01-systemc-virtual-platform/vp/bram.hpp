@@ -9,15 +9,15 @@
 
 class BRAM : public sc_core::sc_module {
 public:
-    // Konstruktori i destruktor
+    // Constructors and destructor
     BRAM(sc_core::sc_module_name name);
     ~BRAM();
 
-    // TLM Target Socketi - BRAM prima podatke od CPU-a i Hard modula
+    // TLM target sockets used by the CPU and hardware model
     tlm_utils::simple_target_socket<BRAM> cpu_socket;
     tlm_utils::simple_target_socket<BRAM> hard_socket;
 
-    // Metoda za obradu TLM transakcija (čitanje/pisanje)
+    // TLM transaction handler for reads and writes
     //void b_transport(tlm::tlm_generic_payload& trans, sc_core::sc_time& delay);
     void b_transport(tlm::tlm_generic_payload& trans, sc_core::sc_time& offset);
 
