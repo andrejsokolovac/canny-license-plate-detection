@@ -45,16 +45,16 @@ private:
 
     sc_core::sc_time offset;
 
-    // TXT metode
+    // TXT helper methods
     std::vector<unsigned char> load_txt_image(const std::string& path, int expected_size);
     void save_txt_image(const std::string& path, const unsigned char* data, int length);
     void compare_with_expected(const std::string& expected_path, const unsigned char* data, int length);
 
-    // Komunikacija sa BRAM-om
+    // BRAM communication
     void send_to_bram(sc_dt::sc_uint<64> addr, unsigned char val);
     void receive_from_bram(sc_dt::sc_uint<64> addr, unsigned char* all_data, int length);
 
-    // Komunikacija sa HARD modulom
+    // Hardware-module communication
     void write_hard(sc_dt::uint64 addr, int value);
     int read_hard(sc_dt::uint64 addr);
 
