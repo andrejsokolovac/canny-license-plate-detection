@@ -32,31 +32,31 @@ error_exit()
 
 check_file()
 {
-    [ -f "$1" ] || error_exit "Nedostaje fajl: $1"
+    [ -f "$1" ] || error_exit "Missing file: $1"
 }
 
 check_threshold()
 {
     case "$1" in
         ""|*[!0-9]*)
-            error_exit "$2 prag mora biti ceo broj od 0 do 255."
+            error_exit "$2 threshold must be an integer from 0 to 255."
             ;;
     esac
 
     [ "$1" -le 255 ] ||
-        error_exit "$2 prag mora biti u opsegu 0-255."
+        error_exit "$2 threshold must be in the range 0-255."
 }
 
 echo "=== Canny project run ==="
 
 [ "$(id -u)" -eq 0 ] ||
-    error_exit "Skripta mora biti pokrenuta kao root."
+    error_exit "The script must be run as root."
 
 check_threshold "$LOW_THRESHOLD" "LOW"
 check_threshold "$HIGH_THRESHOLD" "HIGH"
 
 [ "$LOW_THRESHOLD" -le "$HIGH_THRESHOLD" ] ||
-    error_exit "LOW prag ne sme biti veci od HIGH praga."
+    error_exit "LOW threshold must not be greater than HIGH threshold."
 
 check_file "$BITSTREAM_SRC"
 check_file "$DRIVER_KO"
@@ -65,18 +65,18 @@ check_file "$INPUT_IMG"
 check_file "$REFERENCE_IMG"
 
 [ -e "$FPGA_FIRMWARE" ] ||
-    error_exit "FPGA Manager firmware interfejs nije dostupan."
+    error_exit "FPGA Manager firmware interface is not available."
 
 [ -r "$FPGA_STATE" ] ||
-    error_exit "FPGA Manager state nije dostupan."
+    error_exit "FPGA Manager state is not available."
 
 [ -r "$CANNY_COMPATIBLE" ] ||
-    error_exit "Canny device-tree cvor nije aktivan."
+    error_exit "Canny device-tree node is not active."
 
 ACTIVE_COMPATIBLE=$(tr -d '\0' < "$CANNY_COMPATIBLE")
 
 [ "$ACTIVE_COMPATIBLE" = "$EXPECTED_COMPATIBLE" ] ||
-    error_exit "Aktivan device-tree nije Canny: $ACTIVE_COMPATIBLE"
+    error_exit "Active device tree does not match Canny: $ACTIVE_COMPATIBLE"
 
 echo "Device tree: $ACTIVE_COMPATIBLE"
 echo "Thresholds: LOW=$LOW_THRESHOLD HIGH=$HIGH_THRESHOLD"
@@ -110,13 +110,13 @@ echo "[3/6] Loading Canny kernel driver..."
 insmod "$DRIVER_KO"
 
 lsmod | awk '{print $1}' | grep -qx "canny_driver" ||
-    error_exit "canny_driver nije ucitan."
+    error_exit "canny_driver is not loaded."
 
 echo "[4/6] Checking device files..."
 
 for device in /dev/canny_ctrl /dev/canny_input /dev/canny_edge; do
     [ -c "$device" ] ||
-        error_exit "Nedostaje character device: $device"
+        error_exit "Missing character device: $device"
 done
 
 ls -lh /dev/canny_ctrl /dev/canny_input /dev/canny_edge
@@ -139,6 +139,6 @@ echo "Output: $OUTPUT_IMG"
 echo "Pixels written: $OUTPUT_LINES"
 
 [ "$OUTPUT_LINES" -eq 12288 ] ||
-    error_exit "Izlazni fajl nema 12288 piksela."
+    error_exit "Output file does not contain 12288 pixels."
 
 echo "=== CANNY RUN COMPLETED SUCCESSFULLY ==="
