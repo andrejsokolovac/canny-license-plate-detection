@@ -33,8 +33,7 @@ module canny_verif_top;
 
   // ============================================================
   // Reset generation
-  // Zajednicki reset za AXI-Lite i AXI-Full
-  // Aktivan je na logickoj nuli
+  // Shared active-low reset for AXI-Lite and AXI-Full.
   // ============================================================
 
   initial begin
