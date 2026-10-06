@@ -2,8 +2,7 @@
 
 interface canny_if(input logic clk);
 
-  // Zajedni?ki reset za oba AXI interfejsa.
-  // Aktivan je na logi?koj nuli.
+  // Shared active-low reset for both AXI interfaces.
   logic rst_n;
 
   // ============================================================
