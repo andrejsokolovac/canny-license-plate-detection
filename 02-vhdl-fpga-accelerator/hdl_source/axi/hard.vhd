@@ -203,7 +203,7 @@ architecture Behavioral of ip is
     signal reg_cols : unsigned(9 downto 0) := (others => '0');
 
     --------------------------------------------------------------------
-    -- GAUSS registri
+    -- GAUSS registers
     --------------------------------------------------------------------
     signal reg_i : unsigned(8 downto 0) := (others => '0');
     signal reg_j : unsigned(9 downto 0) := (others => '0');
@@ -218,7 +218,7 @@ architecture Behavioral of ip is
     signal reg_gauss_pix : unsigned(7 downto 0) := (others => '0');
 
     --------------------------------------------------------------------
-    -- SOBEL registri
+    -- SOBEL registers
     --------------------------------------------------------------------
     signal reg_sobel_i : unsigned(8 downto 0) := (others => '0');
     signal reg_sobel_j : unsigned(9 downto 0) := (others => '0');
@@ -232,7 +232,7 @@ architecture Behavioral of ip is
     signal reg_gy : integer range -32768 to 32767 := 0;
 
     --------------------------------------------------------------------
-    -- Magnitude / isqrt registri
+    -- Magnitude / isqrt registers
     --------------------------------------------------------------------
     signal reg_grad_sq   : unsigned(31 downto 0) := (others => '0');
     signal reg_isqrt_num : unsigned(31 downto 0) := (others => '0');
@@ -241,14 +241,14 @@ architecture Behavioral of ip is
     signal reg_mag       : unsigned(15 downto 0) := (others => '0');
 
     --------------------------------------------------------------------
-    -- Direction registri
+    -- Direction registers
     --------------------------------------------------------------------
     signal reg_abs_gx  : unsigned(15 downto 0) := (others => '0');
     signal reg_abs_gy  : unsigned(15 downto 0) := (others => '0');
     signal reg_dir_val : unsigned(7 downto 0)  := (others => '0');
 
     --------------------------------------------------------------------
-    -- NMS registri
+    -- NMS registers
     --------------------------------------------------------------------
     signal reg_nms_i   : unsigned(8 downto 0) := (others => '0');
     signal reg_nms_j   : unsigned(9 downto 0) := (others => '0');
@@ -265,7 +265,7 @@ architecture Behavioral of ip is
     signal reg_r_addr  : unsigned(ADDR_WIDTH-1 downto 0) := (others => '0');
 
     --------------------------------------------------------------------
-    -- THRESH registri
+    -- THRESH registers
     --------------------------------------------------------------------
     signal reg_thresh_i   : unsigned(8 downto 0) := (others => '0');
     signal reg_thresh_j   : unsigned(9 downto 0) := (others => '0');
@@ -278,14 +278,14 @@ architecture Behavioral of ip is
     constant STRONG_EDGE    : integer := 255;
 
     --------------------------------------------------------------------
-    -- EDGE COPY registri
+    -- EDGE COPY registers
     --------------------------------------------------------------------
     signal reg_copy_i   : unsigned(8 downto 0) := (others => '0');
     signal reg_copy_j   : unsigned(9 downto 0) := (others => '0');
     signal reg_copy_pix : unsigned(7 downto 0) := (others => '0');
 
     --------------------------------------------------------------------
-    -- HYST registri
+    -- HYST registers
     --------------------------------------------------------------------
     signal reg_hyst_i         : unsigned(8 downto 0) := (others => '0');
     signal reg_hyst_j         : unsigned(9 downto 0) := (others => '0');
@@ -298,7 +298,7 @@ architecture Behavioral of ip is
     signal reg_hyst_addr      : unsigned(ADDR_WIDTH-1 downto 0) := (others => '0');
 
     --------------------------------------------------------------------
-    -- Kerneli
+    -- Kernels
     --------------------------------------------------------------------
     type kernel_type is array (0 to 4, 0 to 4) of integer;
     constant gauss_kernel : kernel_type := (
@@ -328,7 +328,7 @@ begin
     ready <= ready_reg;
 
     --------------------------------------------------------------------
-    -- BRAM kontrole
+    -- BRAM controls
     --------------------------------------------------------------------
 
     input_ena <= '1' when (
