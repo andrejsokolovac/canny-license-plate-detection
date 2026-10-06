@@ -172,7 +172,7 @@ begin
         wait for 20 ns;
 
         ----------------------------------------------------------------
-        -- U?ITAJ GRAYSCALE TXT I UPIŠI U INPUT BRAM
+        -- LOAD GRAYSCALE TXT AND WRITE TO INPUT BRAM
         ----------------------------------------------------------------
         file_open(gray_file, GRAY_FILE_PATH, read_mode);
 
@@ -199,7 +199,7 @@ begin
         wait for 40 ns;
 
         ----------------------------------------------------------------
-        -- U?ITAJ REFERENTNI EDGE U LOKALNU MEMORIJU
+        -- LOAD REFERENCE EDGE IMAGE INTO LOCAL MEMORY
         ----------------------------------------------------------------
         file_open(edge_file, EDGE_FILE_PATH, read_mode);
 
@@ -212,21 +212,21 @@ begin
         file_close(edge_file);
 
         ----------------------------------------------------------------
-        -- START impuls
+        -- START pulse
         ----------------------------------------------------------------
         start <= '1';
         wait for 40 ns;
         start <= '0';
 
         ----------------------------------------------------------------
-        -- ?ekaj da IP krene
+        -- Wait for the IP to start
         ----------------------------------------------------------------
         while ready /= '0' loop
             wait until rising_edge(clk);
         end loop;
 
         ----------------------------------------------------------------
-        -- ?ekaj da završi
+        -- Wait for the IP to finish
         ----------------------------------------------------------------
         while ready /= '1' loop
             wait until rising_edge(clk);
@@ -236,11 +236,11 @@ begin
         wait until rising_edge(clk);
 
         ----------------------------------------------------------------
-        -- PORE?ENJE EDGE BRAM vs final_edge_36x36.txt
-        -- validni region posle histereze:
+        -- COMPARE EDGE BRAM AGAINST final_edge_36x36.txt
+        -- valid region after hysteresis:
         -- i = 5..30
         -- j = 5..30
-        -- ukupno 26x26 = 676
+        -- total 26x26 = 676
         ----------------------------------------------------------------
         tb_edge_en <= '1';
 
@@ -276,7 +276,7 @@ begin
         tb_edge_addr <= (others => '0');
 
         ----------------------------------------------------------------
-        -- IZVEŠTAJ
+        -- REPORT
         ----------------------------------------------------------------
         report "==========================================";
         report "FINAL EDGE CHECK FINISHED";
