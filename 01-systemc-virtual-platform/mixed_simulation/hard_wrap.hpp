@@ -4,11 +4,8 @@
 #include <systemc>
 
 /*
- * hard_wrap predstavlja VHDL entity "ip" iz fajla hard.vhd kao SystemC modul.
- *
- * Ovo je direktan pandan koleginom ip_wrap.hpp fajlu.
- * Ovaj fajl NE sadrži Canny algoritam i NE radi TLM komunikaciju.
- * Njegova jedina uloga je da Xcelium poveže SystemC signale sa VHDL portovima.
+ * SystemC foreign-module wrapper for the VHDL Canny IP.
+ * Xcelium uses this wrapper to bind SystemC signals to the VHDL entity ports.
  */
 
 class hard_wrap : public sc_core::sc_foreign_module
@@ -77,11 +74,7 @@ public:
     }
 
     /*
-     * Ime mora da se poklopi sa imenom VHDL entiteta:
-     *
-     * entity ip is
-     *
-     * Zato ovde vraćamo "ip".
+     * The foreign-module name must match the VHDL entity name.
      */
     const char* hdl_name() const
     {
