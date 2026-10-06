@@ -20,8 +20,8 @@ Cpu::Cpu(sc_core::sc_module_name name, char** strings, int argv, Hard* hard_ptr)
       done(false),
       offset(SC_ZERO_TIME)
 {
-    // Ako korisnik prosledi ulazni TXT kao argument, koristi taj fajl.
-    // Inace koristi grayscale_full.txt iz trenutnog foldera.
+    // Use the input TXT file provided as an argument when available.
+    // Otherwise use grayscale_full.txt from the current directory.
     if (argv > 1)
     {
         input_txt_path = strings[1];
@@ -49,10 +49,10 @@ void Cpu::process()
     std::cout << "[CPU] Ulazni TXT: " << input_txt_path << std::endl;
     std::cout << "[CPU] Dimenzije slike: " << image_cols << "x" << image_rows << std::endl;
 
-    // 1. Ucitavanje grayscale slike iz TXT fajla
+    // 1. Load grayscale image from TXT
     std::vector<unsigned char> img_data = load_txt_image(input_txt_path, image_size);
 
-    // 2. Upis ulazne slike u SystemC BRAM
+    // 2. Write the input image to SystemC BRAM
     std::cout << "[CPU] Upisujem ulaznu sliku u BRAM..." << std::endl;
 
     for (int i = 0; i < image_size; ++i)
@@ -62,7 +62,7 @@ void Cpu::process()
 
     std::cout << "[CPU] Ulazna slika upisana u BRAM." << std::endl;
 
-    // 3. Slanje rows/cols registara HARD-u
+    // 3. Send rows/cols registers to the hardware model
     write_hard(ADDR_ROWS, image_rows);
     std::cout << "[CPU] Sent image_rows (" << image_rows << ") to HARD." << std::endl;
 
@@ -73,7 +73,7 @@ void Cpu::process()
     write_hard(ADDR_START, 1);
     std::cout << "[CPU] Sent START signal to HARD." << std::endl;
 
-    // 5. Cekanje da VHDL IP zavrsi obradu
+    // 5. Wait for the VHDL IP to finish processing
     ready = read_hard(ADDR_READY);
     std::cout << "[CPU] Waiting for HARD to complete processing... READY = "
               << ready << std::endl;
@@ -82,15 +82,15 @@ void Cpu::process()
 
     std::cout << "[CPU] HARD processing done. Reading processed image..." << std::endl;
 
-    // 6. Citanje rezultata iz BRAM-a
+    // 6. Read the result from BRAM
     unsigned char* result = new unsigned char[image_size];
     receive_from_bram(0, result, image_size);
 
-    // 7. Cuvanje rezultata u TXT
+    // 7. Save the result to TXT
     save_txt_image(output_txt_path, result, image_size);
     std::cout << "[CPU] Rezultat sacuvan u: " << output_txt_path << std::endl;
 
-    // 8. Poredjenje sa ocekivanim rezultatom ako postoji final_edge_full.txt
+    // 8. Compare against final_edge_full.txt when the reference file is available
     compare_with_expected(expected_txt_path, result, image_size);
 
     std::cout << "CPU: Canny edge detection finished." << std::endl;
@@ -270,16 +270,16 @@ void Cpu::compare_with_expected(const std::string& expected_path,
     int mismatches = 0;
 
     /*
-     * Poredjenje radimo isto kao u VHDL testbench-u:
+     * Use the same valid comparison region as the VHDL testbench:
      *
      * for i in 4 to TEST_ROWS - 5 loop
      *     for j in 4 to TEST_COLS - 5 loop
      *
-     * Za 384x512 sliku to znaci:
+     * For a 384x512 image:
      * row = 4..379
      * col = 4..507
      *
-     * Ukupno validnih piksela:
+     * Total valid pixels:
      * 376 * 504 = 189504
      */
     for (int r = 4; r <= image_rows - 5; r++)
