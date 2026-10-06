@@ -9,9 +9,7 @@ module canny_verif_top;
 
   // ============================================================
   // Clock generation
-  // Perioda: 20 ns
-  // Frekvencija: 50 MHz
-  // Isto kao u postojecem Canny VHDL testbenchu
+  // 50 MHz verification clock (20 ns period).
   // ============================================================
 
   logic clk;
@@ -183,8 +181,8 @@ module canny_verif_top;
 
   // ============================================================
   // Initial AXI values
-  // Za sada nijedna AXI transakcija nije aktivna.
-  // Driver ce kasnije upravljati ovim signalima.
+  // Initialize AXI master signals to inactive values.
+  // The UVM driver controls them during simulation.
   // ============================================================
 
   initial begin
@@ -261,13 +259,7 @@ module canny_verif_top;
   // ============================================================
   // UVM start
   //
-  // Konkretan test se bira preko:
-  //
-  //   +UVM_TESTNAME=canny_base_test
-  //
-  // ili:
-  //
-  //   +UVM_TESTNAME=canny_image2_test
+  // Select the test with +UVM_TESTNAME=<test_name>.
   // ============================================================
 
   initial begin
