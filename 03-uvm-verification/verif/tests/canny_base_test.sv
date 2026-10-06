@@ -6,7 +6,7 @@ import uvm_pkg::*;
 
 
 // ============================================================
-// Bazni Canny test
+// Base Canny test
 //
 // Test 1:
 //   grayscale_full.txt
@@ -14,8 +14,8 @@ import uvm_pkg::*;
 //   LOW  = 50
 //   HIGH = 100
 //
-// Izvedene test-klase menjaju test_index kroz
-// configure_test() funkciju.
+// Derived test classes override test_index through the
+// configure_test() function.
 // ============================================================
 
 class canny_base_test extends uvm_test;
@@ -23,18 +23,18 @@ class canny_base_test extends uvm_test;
   `uvm_component_utils(canny_base_test)
 
 
-  // Canny konfiguracioni objekat.
+  // Canny configuration object.
   canny_config cfg;
 
   // Canny UVM environment.
   canny_env env;
 
-  // Virtualni interfejs postavljen iz canny_verif_top-a.
+  // Virtual interface provided by canny_verif_top.
   virtual canny_if vif;
 
 
   // ==========================================================
-  // Konstruktor
+  // Constructor
   // ==========================================================
 
   function new(
@@ -51,9 +51,9 @@ class canny_base_test extends uvm_test;
 
 
   // ==========================================================
-  // Izbor test scenarija
+  // Test scenario selection
   //
-  // Bazni test koristi prvu realnu sliku.
+  // The base test uses the first real image.
   // ==========================================================
 
   virtual function void configure_test();
@@ -87,7 +87,7 @@ class canny_base_test extends uvm_test;
 
 
     // --------------------------------------------------------
-    // Preuzimanje virtualnog interfejsa
+    // Retrieve virtual interface
     // --------------------------------------------------------
 
     if (
@@ -108,7 +108,7 @@ class canny_base_test extends uvm_test;
 
 
     // --------------------------------------------------------
-    // Kreiranje konfiguracionog objekta
+    // Create configuration object
     // --------------------------------------------------------
 
     cfg = canny_config::type_id::create(
@@ -128,27 +128,27 @@ class canny_base_test extends uvm_test;
     end
 
 
-    // Prosledjivanje virtualnog interfejsa konfiguraciji.
+    // Assign the virtual interface to the configuration.
 
     cfg.vif = vif;
 
 
     // --------------------------------------------------------
-    // Izbor konkretnog test scenarija
+    // Select the concrete test scenario
     //
     // canny_base_test:
     //   test_index = 1
-    //   prva realna slika
+    //   first real image
     //
     // canny_image2_test:
     //   test_index = 2
-    //   druga realna slika
+    //   second real image
     //
     // canny_black_test:
     //   test_index = 3
-    //   potpuno crna slika
+    //   completely black image
     //
-    // Svi testovi koriste pragove 50/100.
+    // All tests use thresholds 50/100.
     // --------------------------------------------------------
 
     configure_test();
@@ -170,14 +170,14 @@ class canny_base_test extends uvm_test;
 
 
     // --------------------------------------------------------
-    // Ucitavanje odgovarajuce ulazne i golden slike
+    // Load the corresponding input and golden images
     // --------------------------------------------------------
 
     cfg.load_golden_vectors();
 
 
     // --------------------------------------------------------
-    // Prosledjivanje konfiguracije svim komponentama
+    // Distribute configuration to all components
     // --------------------------------------------------------
 
     uvm_config_db#(canny_config)::set(
@@ -189,7 +189,7 @@ class canny_base_test extends uvm_test;
 
 
     // --------------------------------------------------------
-    // Kreiranje Canny environmenta
+    // Create the Canny environment
     // --------------------------------------------------------
 
     env = canny_env::type_id::create(
@@ -211,7 +211,7 @@ class canny_base_test extends uvm_test;
 
 
     // --------------------------------------------------------
-    // Informacije o konfiguraciji testa
+    // Test configuration information
     // --------------------------------------------------------
 
     `uvm_info(
@@ -337,8 +337,8 @@ class canny_base_test extends uvm_test;
     )
 
 
-    // Cekanje da monitor, scoreboard i coverage obrade
-    // poslednju AXI-Full procitanu rec.
+    // Wait for the monitor, scoreboard, and coverage to process
+    // the final AXI-Full word read.
 
     #100ns;
 
@@ -353,14 +353,14 @@ endclass
 
 
 // ============================================================
-// Test 2: druga realna slika
+// Test 2: second real image
 //
-// Koristi:
+// Uses:
 //
 //   grayscale_full2.txt
 //   final_edge_full2.txt
 //
-// Pragovi:
+// Thresholds:
 //
 //   LOW  = 50
 //   HIGH = 100
@@ -397,20 +397,20 @@ endclass
 
 
 // ============================================================
-// Test 3: potpuno crna slika
+// Test 3: completely black image
 //
-// Koristi:
+// Uses:
 //
 //   grayscale_full_black.txt
 //   final_edge_black.txt
 //
-// Pragovi:
+// Thresholds:
 //
 //   LOW  = 50
 //   HIGH = 100
 //
-// Ovaj test proverava da Canny jezgro ne generise lazne
-// ivice kada su svi ulazni pikseli jednaki nuli.
+// This test checks that the Canny core does not generate false
+// edges when all input pixels are zero.
 // ============================================================
 
 class canny_black_test extends canny_base_test;
@@ -445,18 +445,18 @@ endclass
 // ============================================================
 // Test 4: half-black, half-white image
 //
-// Koristi:
+// Uses:
 //
 //   grayscale_full_half.txt
 //   final_edge_full_half.txt
 //
-// Pragovi:
+// Thresholds:
 //
 //   LOW  = 50
 //   HIGH = 100
 //
-// Ovaj test proverava da Canny jezgro  
-// ispravno radi odnosno pronalazi ivicu 
+// This test checks that the Canny core 
+// correctly detects the edge between the two regions.
 // ============================================================
 
 class canny_half_test extends canny_base_test;
