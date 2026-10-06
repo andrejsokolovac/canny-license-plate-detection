@@ -88,11 +88,6 @@ if lsmod | awk '{print $1}' | grep -qx "canny_driver"; then
     rmmod canny_driver
 fi
 
-if lsmod | awk '{print $1}' | grep -qx "lbp_driver"; then
-    echo "Removing previously loaded lbp_driver..."
-    rmmod lbp_driver
-fi
-
 echo "[2/6] Loading Canny FPGA bitstream..."
 
 if [ ! -f "$BITSTREAM_DST" ] ||

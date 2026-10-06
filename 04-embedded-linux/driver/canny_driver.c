@@ -15,7 +15,7 @@
 #include <linux/mutex.h>
 
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Dimitrije Ilic");
+MODULE_AUTHOR("Andrej Sokolovac");
 MODULE_DESCRIPTION("Linux platform driver for Canny Edge AXI IP core");
 
 #define CANNY_NUM_DEVICES   3
