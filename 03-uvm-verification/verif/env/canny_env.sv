@@ -177,12 +177,7 @@ class canny_env extends uvm_env;
   // ==========================================================
   // Connect phase
   //
-  // Isti monitor analysis port povezujemo sa:
-  //
-  //   1. scoreboardom
-  //   2. coverage komponentom
-  //
-  // Analysis port moze biti povezan sa vise subscriber-a.
+  // Connect monitor output to both scoreboard and coverage.
   // ==========================================================
 
   virtual function void connect_phase(
