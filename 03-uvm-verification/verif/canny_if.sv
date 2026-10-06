@@ -6,43 +6,43 @@ interface canny_if(input logic clk);
   logic rst_n;
 
   // ============================================================
-  // S00_AXI - AXI4-Lite kontrolni/statusni interfejs
+  // S00_AXI - AXI4-Lite control/status interface
   // ============================================================
 
-  // Write address kanal
+  // Write address channel
   logic [4:0]  s00_axi_awaddr;
   logic [2:0]  s00_axi_awprot;
   logic        s00_axi_awvalid;
   logic        s00_axi_awready;
 
-  // Write data kanal
+  // Write data channel
   logic [31:0] s00_axi_wdata;
   logic [3:0]  s00_axi_wstrb;
   logic        s00_axi_wvalid;
   logic        s00_axi_wready;
 
-  // Write response kanal
+  // Write response channel
   logic [1:0]  s00_axi_bresp;
   logic        s00_axi_bvalid;
   logic        s00_axi_bready;
 
-  // Read address kanal
+  // Read address channel
   logic [4:0]  s00_axi_araddr;
   logic [2:0]  s00_axi_arprot;
   logic        s00_axi_arvalid;
   logic        s00_axi_arready;
 
-  // Read data kanal
+  // Read data channel
   logic [31:0] s00_axi_rdata;
   logic [1:0]  s00_axi_rresp;
   logic        s00_axi_rvalid;
   logic        s00_axi_rready;
 
   // ============================================================
-  // S01_AXI - AXI4-Full interfejs za prenos slika
+  // S01_AXI - AXI4-Full image-transfer interface
   // ============================================================
 
-  // Write address kanal
+  // Write address channel
   logic [0:0]  s01_axi_awid;
   logic [18:0] s01_axi_awaddr;
   logic [7:0]  s01_axi_awlen;
@@ -57,7 +57,7 @@ interface canny_if(input logic clk);
   logic        s01_axi_awvalid;
   logic        s01_axi_awready;
 
-  // Write data kanal
+  // Write data channel
   logic [31:0] s01_axi_wdata;
   logic [3:0]  s01_axi_wstrb;
   logic        s01_axi_wlast;
@@ -65,14 +65,14 @@ interface canny_if(input logic clk);
   logic        s01_axi_wvalid;
   logic        s01_axi_wready;
 
-  // Write response kanal
+  // Write response channel
   logic [0:0]  s01_axi_bid;
   logic [1:0]  s01_axi_bresp;
   logic [0:0]  s01_axi_buser;
   logic        s01_axi_bvalid;
   logic        s01_axi_bready;
 
-  // Read address kanal
+  // Read address channel
   logic [0:0]  s01_axi_arid;
   logic [18:0] s01_axi_araddr;
   logic [7:0]  s01_axi_arlen;
@@ -87,7 +87,7 @@ interface canny_if(input logic clk);
   logic        s01_axi_arvalid;
   logic        s01_axi_arready;
 
-  // Read data kanal
+  // Read data channel
   logic [0:0]  s01_axi_rid;
   logic [31:0] s01_axi_rdata;
   logic [1:0]  s01_axi_rresp;
