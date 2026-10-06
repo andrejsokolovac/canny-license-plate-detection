@@ -10,13 +10,13 @@
 
 class Hard : public sc_core::sc_module {
 public:
-    // Target socket za komunikaciju sa CPU-om
+    // Target socket for communication with the CPU
     tlm_utils::simple_target_socket<Hard> interconnect_socket;
 
-    // Initiator socket za direktnu komunikaciju sa BRAM-om
+    // Initiator socket for direct BRAM access
     tlm_utils::simple_initiator_socket<Hard> bram_socket;
 
-    // Promenljive za rad
+    // Processing state
     sc_dt::sc_uint<16> rows, cols;
     sc_dt::sc_uint<1> ready;
     sc_dt::sc_uint<1> start;
@@ -31,17 +31,17 @@ public:
     Hard(sc_core::sc_module_name name);
     ~Hard();
   
-    // TLM b_transport funkcija za obradu CPU zahteva
+    // TLM b_transport callback for CPU requests
     void b_transport(tlm::tlm_generic_payload &pl, sc_core::sc_time &offset);
 
-    // Funkcije za direktan rad sa BRAM-om
+    // Direct BRAM access functions
     void write_bram(sc_dt::uint64 addr, unsigned char val);
     unsigned char read_bram(sc_dt::uint64 addr);
 
-    // Glavna funkcija obrade (Canny Edge Detection)
+    // Main Canny edge-detection function
     void execute_canny();
     
-    // Glavna nit
+    // Main thread
     void main_thread();
     
 };
