@@ -461,10 +461,8 @@ class canny_driver extends uvm_driver #(canny_seq_item);
   //
   // Canny START register: 0x10
   //
-  // The verified Canny AXI VHDL TB performs:
-  //   START = 1
-  //   wait 5 falling clock edges
-  //   START = 0
+  // Generate the START pulse expected by the accelerator:
+  // assert START, hold it for five falling clock edges, then deassert it.
   // ==========================================================
 
   task start_processing(
@@ -518,7 +516,7 @@ class canny_driver extends uvm_driver #(canny_seq_item);
   // First wait until READY becomes 0, proving that processing
   // started. Then wait until READY returns to 1.
   //
-  // Poll interval and timeout follow the Canny AXI VHDL TB:
+  // READY polling interval and timeout:
   //   poll interval = 1000 ns
   //   max polls     = 2,000,000
   // ==========================================================
@@ -655,8 +653,7 @@ class canny_driver extends uvm_driver #(canny_seq_item);
     end
 
 
-    // Two additional clocks, as stabilization before the
-    // later output image read phase.
+    // Allow two clock cycles after READY completion before output readback.
 
     repeat (2) begin
 
