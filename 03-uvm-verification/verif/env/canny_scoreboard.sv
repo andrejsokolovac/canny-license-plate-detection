@@ -8,26 +8,6 @@ import canny_agent_pkg::*;
 import canny_config_pkg::*;
 
 
-// ============================================================
-// Canny scoreboard
-//
-// Struktura prati kolegin lbp_scoreboard:
-//
-//   uvm_scoreboard
-//   uvm_analysis_imp
-//   cfg iz config_db
-//   write() za proveru
-//   report_phase() za zavrsni rezultat
-//
-// Canny-specific behavior:
-//
-//   - ignorise AXI-Full citanja ulazne memorije
-//   - prihvata citanja od izlazne baze 0x40000
-//   - raspakuje 4 piksela iz jedne 32-bitne reci
-//   - poredi samo validnu zonu slike
-//   - detektuje duple i nedostajuce izlazne reci
-// ============================================================
-
 class canny_scoreboard extends uvm_scoreboard;
 
   `uvm_component_utils(canny_scoreboard)

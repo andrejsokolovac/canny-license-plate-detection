@@ -24,20 +24,6 @@ class canny_agent extends uvm_agent;
 
   endfunction
 
-
-  // ==========================================================
-  // Build phase
-  //
-  // Struktura prati kolegin lbp_agent:
-  //
-  //   sequencer
-  //   driver
-  //   monitor
-  //
-  // Kod Canny projekta zadrzavamo postojeca imena
-  // "sequencer" i "driver", jer ih base test vec koristi.
-  // ==========================================================
-
   virtual function void build_phase(
     uvm_phase phase
   );
@@ -165,8 +151,6 @@ class canny_agent extends uvm_agent;
 
   // ==========================================================
   // Connect phase
-  //
-  // Kao kod kolege, ovde se povezuju samo driver i sequencer.
   //
   // Monitor analysis port ce kasnije biti povezan sa:
   //

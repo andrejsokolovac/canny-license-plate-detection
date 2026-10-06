@@ -241,7 +241,7 @@ class canny_config extends uvm_object;
 
         golden_edge_path = {
           golden_dir,
-          "final_edge_black.txt"
+          "final_edge_full_black.txt"
         };
 
       end

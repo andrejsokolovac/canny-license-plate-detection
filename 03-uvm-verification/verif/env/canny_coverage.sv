@@ -8,32 +8,6 @@ import canny_agent_pkg::*;
 import canny_config_pkg::*;
 
 
-// ============================================================
-// Canny functional coverage
-//
-// Struktura prati kolegin lbp_coverage:
-//
-//   uvm_subscriber
-//   cfg iz config_db
-//   write() prima transakcije monitora
-//   covergroup-ovi beleze funkcionalne slucajeve
-//   report_phase() ispisuje rezultat
-//
-// Trenutni Canny monitor prosledjuje AXI-Full read podatke.
-// Zbog toga ova komponenta trenutno prati:
-//
-//   - vrednosti izlaznih edge piksela
-//   - validnu i granicnu zonu slike
-//   - gornji, srednji i donji deo slike
-//   - sva cetiri byte lane-a 32-bitne reci
-//   - sve cetiri cetvrtine izlazne memorije
-//   - LOW i HIGH threshold kategorije
-//   - odnos LOW i HIGH threshold vrednosti
-//
-// Scoreboard proverava tacnost rezultata.
-// Coverage samo meri koje slucajeve smo pogodili.
-// ============================================================
-
 class canny_coverage extends uvm_subscriber #(canny_seq_item);
 
   `uvm_component_utils(canny_coverage)

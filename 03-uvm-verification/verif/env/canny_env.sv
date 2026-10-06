@@ -25,19 +25,6 @@ class canny_env extends uvm_env;
   endfunction
 
 
-  // ==========================================================
-  // Build phase
-  //
-  // Struktura prati kolegin lbp_env:
-  //
-  //   agent
-  //   scoreboard
-  //   coverage
-  //
-  // Canny konfiguracija se prosledjuje svim komponentama koje
-  // je koriste.
-  // ==========================================================
-
   virtual function void build_phase(
     uvm_phase phase
   );
