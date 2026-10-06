@@ -103,23 +103,15 @@ class canny_monitor extends uvm_monitor;
   // ==========================================================
   // Run phase
   //
-  // Monitor prati AXI-Full read kanal.
+  // Monitor the AXI-Full read channel.
   //
-  // Trenutni Canny driver podrzava:
+  // The current driver supports single-word reads with one active
+  // transaction and no multiple outstanding read requests.
   //
-  //   - burst_len = 1
-  //   - jednu aktivnu read transakciju
-  //   - nema vise outstanding read zahteva
-  //
-  // Zbog mixed-language SystemVerilog/VHDL scheduling-a,
-  // ARREADY moze postati vidljiv tek nakon pozitivne ivice
-  // na kojoj je DUT prihvatio adresu.
-  //
-  // Zato monitor pamti ARADDR kada vidi ARVALID, umesto da
-  // zahteva da ARVALID i ARREADY budu vidljivi istovremeno.
-  //
-  // Adresa ostaje stabilna sve dok driver ne zavrsi zahtev,
-  // pa je ovaj pristup bezbedan za trenutni single-read tok.
+  // Because of mixed-language SystemVerilog/VHDL scheduling,
+  // ARREADY may become visible after the clock edge on which the
+  // DUT accepted the address. The monitor therefore captures ARADDR
+  // when ARVALID is first observed and keeps it until read completion.
   // ==========================================================
 
   virtual task run_phase(
@@ -157,8 +149,8 @@ class canny_monitor extends uvm_monitor;
       @(posedge vif.clk);
 
 
-      // Omogucava da se mixed-language VHDL signalna
-      // azuriranja zavrse pre uzorkovanja AXI signala.
+      // Allow mixed-language VHDL signal updates to settle
+      // before sampling AXI signals.
 
       #1ps;
 
@@ -183,11 +175,8 @@ class canny_monitor extends uvm_monitor;
         // ----------------------------------------------------
         // AXI-Full read address
         //
-        // Driver drzi ARADDR stabilnim dok je ARVALID aktivan.
-        //
-        // Posto postoji najvise jedna aktivna read transakcija,
-        // adresu mozemo zapamtiti pri prvom uzorkovanju
-        // ARVALID signala.
+        // ARADDR remains stable while ARVALID is asserted.
+        // Capture it on the first observed ARVALID cycle.
         // ----------------------------------------------------
 
         if (
@@ -280,8 +269,7 @@ class canny_monitor extends uvm_monitor;
             );
 
 
-            // Trenutno je svaki read single-word i RLAST mora
-            // biti aktivan. Adresa se oslobadja nakon prijema.
+            // Single-word reads are expected to terminate with RLAST.
 
             if (
               vif.s01_axi_rlast === 1'b1
