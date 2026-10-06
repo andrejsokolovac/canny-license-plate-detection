@@ -25,7 +25,7 @@ class canny_coverage extends uvm_subscriber #(canny_seq_item);
 
 
   // ==========================================================
-  // Validna zona
+  // Valid image region
   // ==========================================================
 
   localparam int unsigned VALID_ROW_MIN = 5;
@@ -36,7 +36,7 @@ class canny_coverage extends uvm_subscriber #(canny_seq_item);
 
 
   // ==========================================================
-  // Sampled vrednosti
+  // Sampled values
   // ==========================================================
 
   int unsigned sampled_edge_value;
@@ -58,23 +58,23 @@ class canny_coverage extends uvm_subscriber #(canny_seq_item);
 
   // sampled_image_region:
   //
-  //   0 -> border zona
-  //   1 -> validna zona
+  //   0 -> border region
+  //   1 -> valid region
 
 
   // sampled_row_section:
   //
-  //   0 -> gornja trecina slike
-  //   1 -> srednja trecina slike
-  //   2 -> donja trecina slike
+  //   0 -> top third of the image
+  //   1 -> middle third of the image
+  //   2 -> bottom third of the image
 
 
   // sampled_output_quarter:
   //
-  //   0 -> prva cetvrtina izlazne memorije
-  //   1 -> druga cetvrtina izlazne memorije
-  //   2 -> treca cetvrtina izlazne memorije
-  //   3 -> cetvrta cetvrtina izlazne memorije
+  //   0 -> first quarter of output memory
+  //   1 -> second quarter of output memory
+  //   2 -> third quarter of output memory
+  //   3 -> fourth quarter of output memory
 
 
   // sampled_threshold_relation:
@@ -85,7 +85,7 @@ class canny_coverage extends uvm_subscriber #(canny_seq_item);
 
 
   // ==========================================================
-  // Pomocne velicine i brojaci
+  // Helper values and counters
   // ==========================================================
 
   int unsigned total_pixel_count;
@@ -105,16 +105,16 @@ class canny_coverage extends uvm_subscriber #(canny_seq_item);
 
 
   // ==========================================================
-  // Coverage izlaznog piksela
+  // Output pixel coverage
   //
-  // Canny izlaz koristi:
+  // Canny output uses:
   //
-  //   0   -> nema ivice
-  //   127 -> slaba ivica
-  //   255 -> jaka ivica
+  //   0   -> no edge
+  //   127 -> weak edge
+  //   255 -> strong edge
   //
-  // Bins "other" ostaje da bismo videli da li je DUT proizveo
-  // neku vrednost van tri ocekivane klase.
+  // The "other" bin captures any DUT output
+  // outside the three expected classes.
   // ==========================================================
 
   covergroup cg_canny_output_pixel;
@@ -195,10 +195,10 @@ class canny_coverage extends uvm_subscriber #(canny_seq_item);
 
 
   // ==========================================================
-  // Coverage izlazne adrese
+  // Output address coverage
   //
-  // Potvrdjuje da je citanje proslo kroz celu izlaznu memoriju,
-  // a ne samo kroz njen pocetak.
+  // Confirms that reads span the complete output memory,
+  // rather than only its beginning.
   // ==========================================================
 
   covergroup cg_canny_output_address;
@@ -422,8 +422,8 @@ class canny_coverage extends uvm_subscriber #(canny_seq_item);
   // ==========================================================
   // Write
   //
-  // Monitor prosledjuje jednu canny_seq_item transakciju za
-  // svaku procitanu AXI-Full 32-bitnu rec.
+  // The monitor forwards one canny_seq_item transaction for
+  // each AXI-Full 32-bit word read.
   // ==========================================================
 
   virtual function void write(
@@ -442,7 +442,7 @@ class canny_coverage extends uvm_subscriber #(canny_seq_item);
 
 
     // --------------------------------------------------------
-    // Obradjujemo samo AXI-Full read transakcije.
+    // Process AXI-Full read transactions only.
     // --------------------------------------------------------
 
     if (
@@ -458,7 +458,7 @@ class canny_coverage extends uvm_subscriber #(canny_seq_item);
 
 
     // --------------------------------------------------------
-    // Ignorisemo kontrolna citanja ulazne slike.
+    // Ignore control reads from input memory.
     // --------------------------------------------------------
 
     if (
@@ -474,10 +474,10 @@ class canny_coverage extends uvm_subscriber #(canny_seq_item);
 
 
     // --------------------------------------------------------
-    // Ignorisemo adrese van izlazne slike.
+    // Ignore addresses outside the output image.
     //
-    // Scoreboard ce ovakvu adresu prijaviti kao gresku.
-    // Coverage komponenta je samo ne uzorkuje.
+    // The scoreboard reports such addresses as errors.
+    // The coverage component simply does not sample them.
     // --------------------------------------------------------
 
     if (
@@ -493,7 +493,7 @@ class canny_coverage extends uvm_subscriber #(canny_seq_item);
 
 
     // --------------------------------------------------------
-    // Ignorisemo neporavnate AXI adrese.
+    // Ignore unaligned AXI addresses.
     // --------------------------------------------------------
 
     if (
@@ -511,7 +511,7 @@ class canny_coverage extends uvm_subscriber #(canny_seq_item);
 
 
     // --------------------------------------------------------
-    // Indeks 32-bitne izlazne reci.
+    // 32-bit output word index.
     // --------------------------------------------------------
 
     word_index =
@@ -537,7 +537,7 @@ class canny_coverage extends uvm_subscriber #(canny_seq_item);
 
 
     // --------------------------------------------------------
-    // Cetvrtina izlazne memorije.
+    // Output-memory quarter.
     // --------------------------------------------------------
 
     if (
@@ -582,7 +582,7 @@ class canny_coverage extends uvm_subscriber #(canny_seq_item);
 
 
     // --------------------------------------------------------
-    // Threshold coverage se uzorkuje jednom po testu.
+    // Threshold coverage is sampled once per test.
     // --------------------------------------------------------
 
     if (
@@ -634,9 +634,9 @@ class canny_coverage extends uvm_subscriber #(canny_seq_item);
 
 
     // --------------------------------------------------------
-    // Raspakivanje cetiri piksela iz jedne 32-bitne reci.
+    // Unpack four pixels from one 32-bit word.
     //
-    // Little-endian raspored:
+    // Little-endian layout:
     //
     //   bits  7:0  -> lane 0
     //   bits 15:8  -> lane 1
@@ -686,7 +686,7 @@ class canny_coverage extends uvm_subscriber #(canny_seq_item);
 
 
       // ------------------------------------------------------
-      // Validna ili border zona.
+      // Validna ili border region.
       // ------------------------------------------------------
 
       if (
@@ -709,7 +709,7 @@ class canny_coverage extends uvm_subscriber #(canny_seq_item);
 
 
       // ------------------------------------------------------
-      // Gornja, srednja ili donja trecina slike.
+      // Gornja, srednja ili bottom third of the image.
       // ------------------------------------------------------
 
       if (
@@ -903,8 +903,8 @@ class canny_coverage extends uvm_subscriber #(canny_seq_item);
     )
 
 
-    // Coverage nije pass/fail kriterijum.
-    // Ovaj warning samo pokazuje da izlazna slika nije citana.
+    // Coverage is not a pass/fail criterion.
+    // This warning only indicates that the output image was not read.
 
     if (
       sampled_output_word_count == 0
