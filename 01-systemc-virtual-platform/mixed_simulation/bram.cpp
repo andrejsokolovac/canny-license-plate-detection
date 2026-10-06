@@ -2,7 +2,7 @@
 #include <iostream>
 
 BRAM::BRAM(sc_core::sc_module_name name) : sc_module(name) {
-    // Registracija b_transport metode za oba socketa
+    // Register the b_transport callback for both sockets
     cpu_socket.register_b_transport(this, &BRAM::b_transport);
     hard_socket.register_b_transport(this, &BRAM::b_transport);
     
@@ -19,7 +19,7 @@ void BRAM::b_transport(tlm::tlm_generic_payload &trans, sc_core::sc_time &offset
     unsigned char* data_ptr = trans.get_data_ptr();
     unsigned int len = trans.get_data_length();
 
-    // Provera da li adresa prelazi dozvoljene granice
+    // Check whether the address exceeds the valid range
     if (addr >= BRAM_SIZE) {
         SC_REPORT_ERROR("BRAM", "Out of bounds memory access");
         trans.set_response_status(tlm::TLM_ADDRESS_ERROR_RESPONSE);
