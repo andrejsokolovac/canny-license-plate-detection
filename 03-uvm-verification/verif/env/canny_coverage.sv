@@ -229,18 +229,8 @@ class canny_coverage extends uvm_subscriber #(canny_seq_item);
 
 
   // ==========================================================
-  // Coverage threshold konfiguracije
-  //
-  // Ovaj covergroup se uzorkuje jednom po testu, pri prijemu
-  // prve izlazne reci.
-  //
-  // U prvom testu ocekujemo:
-  //
-  //   LOW  = 50
-  //   HIGH = 100
-  //   LOW < HIGH
-  //
-  // Ostali binovi ce se popunjavati dodatnim testovima.
+  // Functional coverage for threshold values and their relation.
+  // This covergroup is sampled once per test on the first output word.
   // ==========================================================
 
   covergroup cg_canny_thresholds;
