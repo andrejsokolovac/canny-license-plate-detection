@@ -297,7 +297,7 @@ class canny_monitor extends uvm_monitor;
             end
             else begin
 
-              // Podrska za eventualno buduce burst citanje.
+              // Advance the address for a multi-beat response.
 
               current_read_addr =
                 current_read_addr + 4;
