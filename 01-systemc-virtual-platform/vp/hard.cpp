@@ -136,12 +136,12 @@ void Hard::execute_canny() {
     static sc_uint<16> magnitude[MAX_IMAGE_HEIGHT][MAX_IMAGE_WIDTH] = {};
     static sc_uint<16> blurred[MAX_IMAGE_HEIGHT][MAX_IMAGE_WIDTH] = {};
     
-    // Čitanje iz BRAM-a
+    // Read from BRAM
     for (int i = 0; i < rows; ++i)
         for (int j = 0; j < cols; ++j)
             input_image[i][j] = read_bram(i * cols + j);
 
-    // Gaussova filtracija
+    // Gaussian filtering
     const sc_uint<8> kernel[5][5] = {
         {1, 4, 6, 4, 1},
         {4, 16, 24, 16, 4},
@@ -184,7 +184,7 @@ void Hard::execute_canny() {
             sc_uint<32> grad_squared = gx * gx + gy * gy;
             magnitude[i][j] = isqrt(grad_squared);
 	    
-	    // Zamena za atan2 (diskretizovano u 4 smera)
+	    // atan2 replacement using four discrete directions
 	    sc_int<32> abs_gx = (gx >= sc_int<1>(0)) ? gx : sc_int<32>(-gx);
 	    sc_int<32> abs_gy = (gy >= sc_int<1>(0)) ? gy : sc_int<32>(-gy);
 
@@ -222,7 +222,7 @@ void Hard::execute_canny() {
             edges[i][j] = (magnitude[i][j] >= q && magnitude[i][j] >= r) ? (sc_uint<16>)magnitude[i][j] : sc_uint<16>(0);
         }
 
-    // Pragovi	
+    // Thresholding	
     sc_uint<8> STRONG_EDGE = 255;
     sc_uint<8> WEAK_EDGE = 127;
     sc_uint<8> LOW_THRESHOLD = 50;
@@ -238,7 +238,7 @@ void Hard::execute_canny() {
                 edges[i][j] = 0;
         }
 
-    // Histereza
+    // Hysteresis
     for (int i = 1; i < rows - 1; ++i)
         for (int j = 1; j < cols - 1; ++j) {
             if (edges[i][j] == WEAK_EDGE) {
@@ -251,7 +251,7 @@ void Hard::execute_canny() {
             }
         }
     
-    // Upisivanje nazad u BRAM
+    // Write the result back to BRAM
     for (int i = 0; i < rows; ++i)
         for (int j = 0; j < cols; ++j)
             write_bram(i * cols + j, edges[i][j]);
