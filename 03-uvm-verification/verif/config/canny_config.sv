@@ -11,12 +11,12 @@ import uvm_pkg::*;
 
 class canny_config extends uvm_object;
 
-  // Virtualni interfejs koji koriste UVM komponente.
+  // Virtual interface used by the UVM components.
   virtual canny_if vif;
 
 
   // ==========================================================
-  // Canny konfiguracioni parametri
+  // Canny configuration parameters
   // ==========================================================
 
   int unsigned rows;
@@ -29,11 +29,11 @@ class canny_config extends uvm_object;
 
 
   // ==========================================================
-  // Validna zona koja se poredi u scoreboard-u
+  // Valid image region compared by the scoreboard
   //
-  // Za sliku 384 x 512:
-  //   redovi  = 5 ... 378
-  //   kolone  = 5 ... 506
+  // For a 384 x 512 image:
+  //   rows    = 5 ... 378
+  //   columns = 5 ... 506
   // ==========================================================
 
   int unsigned valid_row_first;
@@ -44,7 +44,7 @@ class canny_config extends uvm_object;
 
 
   // ==========================================================
-  // Putanje do TXT fajlova
+  // TXT file paths
   // ==========================================================
 
   string golden_dir;
@@ -54,26 +54,26 @@ class canny_config extends uvm_object;
 
 
   // ==========================================================
-  // Velicina slike
+  // Image size
   //
-  // 512 x 384 = 196608 piksela
-  // 4 piksela po jednoj 32-bitnoj AXI reci
-  // 196608 / 4 = 49152 reci
+  // 512 x 384 = 196608 pixels
+  // 4 pixels per 32-bit AXI word
+  // 196608 / 4 = 49152 words
   // ==========================================================
 
   localparam int unsigned IMG_PIXELS = 196608;
   localparam int unsigned IMG_WORDS  = 49152;
 
 
-  // Ulazna grayscale slika spakovana u 32-bitne AXI reci.
+  // Input grayscale image packed into 32-bit AXI words.
   bit [31:0] input_words[];
 
-  // Ocekivani SystemC rezultat, piksel po piksel.
+  // Expected SystemC result stored pixel by pixel.
   bit [7:0] expected_pixels[];
 
 
   // ==========================================================
-  // UVM factory registracija
+  // UVM factory registration
   // ==========================================================
 
   `uvm_object_utils_begin(canny_config)
@@ -99,7 +99,7 @@ class canny_config extends uvm_object;
 
 
   // ==========================================================
-  // Konstruktor
+  // Constructor
   // ==========================================================
 
   function new(
@@ -117,7 +117,7 @@ class canny_config extends uvm_object;
     high_threshold = 100;
 
 
-    // Podrazumevano se bira prva realna slika.
+    // The first real image is selected by default.
     test_index = 1;
 
 
@@ -128,11 +128,11 @@ class canny_config extends uvm_object;
     valid_col_last  = cols - 6;
 
 
-    // XSim se pokrece iz:
+    // XSim runs from:
     //
     // canny_verification.sim/sim_1/behav/xsim
     //
-    // Cetiri nivoa iznad nalazi se glavni projektni folder.
+    // The project root is four directory levels above this path.
 
     golden_dir =
       "../../../../golden_vectors/";
@@ -155,7 +155,7 @@ class canny_config extends uvm_object;
 
 
   // ==========================================================
-  // Izbor TXT fajlova na osnovu test_index vrednosti
+  // Select TXT files based on test_index
   // ==========================================================
 
   function void set_paths_from_test_index();
@@ -166,7 +166,7 @@ class canny_config extends uvm_object;
 
       // ------------------------------------------------------
       // Test 1:
-      // prva realna slika
+      // first real image
       // ------------------------------------------------------
 
       1: begin
@@ -187,7 +187,7 @@ class canny_config extends uvm_object;
 
       // ------------------------------------------------------
       // Test 2:
-      // druga realna slika
+      // second real image
       // ------------------------------------------------------
 
       2: begin
@@ -208,7 +208,7 @@ class canny_config extends uvm_object;
 
       // ------------------------------------------------------
       // Test 3:
-      // potpuno crna slika
+      // completely black image
       // ------------------------------------------------------
 
       3: begin
@@ -229,7 +229,7 @@ class canny_config extends uvm_object;
 
       // ------------------------------------------------------
       // Test 4:
-      // leva polovina crna, desna polovina bela
+      // left half black, right half white
       // ------------------------------------------------------
 
       4: begin
@@ -249,7 +249,7 @@ class canny_config extends uvm_object;
 
 
       // ------------------------------------------------------
-      // Nepodrzan test indeks
+      // Unsupported test index
       // ------------------------------------------------------
 
       default: begin
@@ -303,7 +303,7 @@ class canny_config extends uvm_object;
 
 
   // ==========================================================
-  // Ucitavanje ulazne i golden slike
+  // Load input and golden-reference images
   // ==========================================================
 
   function void load_golden_vectors();
@@ -317,9 +317,9 @@ class canny_config extends uvm_object;
 
 
   // ==========================================================
-  // Ucitavanje grayscale slike
+  // Load grayscale image
   //
-  // Cetiri uzastopna piksela se pakuju u jednu AXI rec:
+  // Four consecutive pixels are packed into one AXI word:
   //
   //   pixel 0 -> bits  7:0
   //   pixel 1 -> bits 15:8
@@ -364,7 +364,7 @@ class canny_config extends uvm_object;
     end
 
 
-    // Ocisti AXI reci pre pakovanja ulazne slike.
+    // Clear AXI words before packing the input image.
 
     for (
       word_idx = 0;
@@ -445,7 +445,7 @@ class canny_config extends uvm_object;
     end
 
 
-    // Provera da fajl nema vise od 196608 vrednosti.
+    // Verify that the file does not contain more than 196608 values.
 
     extra_status =
       $fscanf(
@@ -488,10 +488,10 @@ class canny_config extends uvm_object;
 
 
   // ==========================================================
-  // Ucitavanje SystemC golden edge slike
+  // Load SystemC golden edge image
   //
-  // Golden rezultat se cuva kao niz pojedinacnih 8-bitnih
-  // piksela jer ih scoreboard poredi piksel po piksel.
+  // The golden result is stored as an array of individual 8-bit
+  // pixels because the scoreboard compares them pixel by pixel.
   // ==========================================================
 
   function void load_golden_edge();
@@ -588,7 +588,7 @@ class canny_config extends uvm_object;
     end
 
 
-    // Provera da fajl nema vise od 196608 vrednosti.
+    // Verify that the file does not contain more than 196608 values.
 
     extra_status =
       $fscanf(
