@@ -6,10 +6,7 @@ import uvm_pkg::*;
 
 
 // ============================================================
-// Canny sequencer
-//
-// Prima Canny sequence item-e koje stvaraju sekvence
-// i prosle?uje ih driver-u.
+// Canny transaction sequencer.
 // ============================================================
 
 class canny_sequencer extends uvm_sequencer #(canny_seq_item);
