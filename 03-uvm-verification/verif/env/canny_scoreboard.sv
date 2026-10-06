@@ -13,7 +13,7 @@ class canny_scoreboard extends uvm_scoreboard;
   `uvm_component_utils(canny_scoreboard)
 
 
-  // Monitor salje canny_seq_item transakcije na ovaj export.
+  // The monitor sends canny_seq_item transactions to this export.
 
   uvm_analysis_imp #(
     canny_seq_item,
@@ -33,15 +33,15 @@ class canny_scoreboard extends uvm_scoreboard;
 
 
   // ==========================================================
-  // Validna zona za 512 x 384 automobilsku sliku
+  // Valid region for the 512 x 384 automotive image
   //
-  // Redovi:
+  // Rows:
   //   5 .. 378
   //
-  // Kolone:
+  // Columns:
   //   5 .. 506
   //
-  // Broj piksela:
+  // Pixel count:
   //   374 x 502 = 187748
   // ==========================================================
 
@@ -53,7 +53,7 @@ class canny_scoreboard extends uvm_scoreboard;
 
 
   // ==========================================================
-  // Ocekivane velicine
+  // Expected sizes
   // ==========================================================
 
   int unsigned total_pixel_count;
@@ -64,20 +64,20 @@ class canny_scoreboard extends uvm_scoreboard;
 
 
   // ==========================================================
-  // Pracenje primljenih reci
+  // Tracking received words
   //
-  // Jedan bit za svaku od 49152 izlazne reci.
-  // Koristi se za detekciju:
+  // One bit for each of the 49152 output words.
+  // Used to detect:
   //
-  //   - duplih citanja
-  //   - nedostajucih citanja
+  //   - duplicate reads
+  //   - missing reads
   // ==========================================================
 
   bit seen_output_word[];
 
 
   // ==========================================================
-  // Brojaci
+  // Counters
   // ==========================================================
 
   int unsigned output_word_count;
@@ -95,8 +95,8 @@ class canny_scoreboard extends uvm_scoreboard;
   int unsigned printed_mismatch_count;
 
 
-  // Ogranicavamo detaljan ispis da log ne bi imao
-  // hiljade UVM_ERROR poruka ukoliko postoji sistemska greska.
+  // Limit detailed reporting so the log does not contain
+  // thousands of UVM_ERROR messages in case of a systemic failure.
 
   localparam int unsigned MAX_PRINTED_MISMATCHES = 20;
 
@@ -263,8 +263,8 @@ class canny_scoreboard extends uvm_scoreboard;
   // ==========================================================
   // Write
   //
-  // Poziva se svaki put kada monitor prosledi jednu procitanu
-  // AXI-Full 32-bitnu rec.
+  // Called whenever the monitor forwards one read
+  // AXI-Full 32-bit word.
   // ==========================================================
 
   virtual function void write(
@@ -284,7 +284,7 @@ class canny_scoreboard extends uvm_scoreboard;
 
 
     // --------------------------------------------------------
-    // Scoreboard obradjuje samo AXI-Full read transakcije.
+    // Process AXI-Full read transactions only.
     // --------------------------------------------------------
 
     if (
@@ -298,7 +298,7 @@ class canny_scoreboard extends uvm_scoreboard;
 
 
     // --------------------------------------------------------
-    // Ignorisemo kontrolna citanja ulazne grayscale memorije.
+    // Ignore control reads from input grayscale memory.
     //
     // Input memory:
     //   0x00000 .. 0x2FFFC
@@ -317,7 +317,7 @@ class canny_scoreboard extends uvm_scoreboard;
 
 
     // --------------------------------------------------------
-    // Provera izlaznog adresnog opsega.
+    // Validate output address range.
     // --------------------------------------------------------
 
     if (
@@ -347,7 +347,7 @@ class canny_scoreboard extends uvm_scoreboard;
 
 
     // --------------------------------------------------------
-    // AXI adresa mora biti poravnata na 4 bajta.
+    // AXI addresses must be aligned to 4 bytes.
     // --------------------------------------------------------
 
     if (
@@ -378,7 +378,7 @@ class canny_scoreboard extends uvm_scoreboard;
 
 
     // --------------------------------------------------------
-    // Izracunavanje indeksa 32-bitne reci.
+    // Calculate the 32-bit word index.
     // --------------------------------------------------------
 
     word_index =
@@ -415,7 +415,7 @@ class canny_scoreboard extends uvm_scoreboard;
 
 
     // --------------------------------------------------------
-    // Detekcija duplog citanja iste izlazne reci.
+    // Detect duplicate reads of the same output word.
     // --------------------------------------------------------
 
     if (
@@ -452,9 +452,9 @@ class canny_scoreboard extends uvm_scoreboard;
 
 
     // --------------------------------------------------------
-    // Raspakivanje jedne 32-bitne reci.
+    // Unpack one 32-bit word.
     //
-    // Little-endian raspored:
+    // Little-endian layout:
     //
     //   bits  7:0  -> pixel 4*N + 0
     //   bits 15:8  -> pixel 4*N + 1
@@ -509,7 +509,7 @@ class canny_scoreboard extends uvm_scoreboard;
 
 
       // ------------------------------------------------------
-      // Poredimo samo validnu zonu.
+      // Compare only the valid image region.
       // ------------------------------------------------------
 
       if (
@@ -578,7 +578,7 @@ class canny_scoreboard extends uvm_scoreboard;
 
 
     // --------------------------------------------------------
-    // Periodicni napredak na svakih 4096 reci.
+    // Report progress every 4096 words.
     // --------------------------------------------------------
 
     if (
@@ -776,7 +776,7 @@ class canny_scoreboard extends uvm_scoreboard;
 
 
     // --------------------------------------------------------
-    // Nisu primljeni izlazni rezultati.
+    // No output results were received.
     // --------------------------------------------------------
 
     if (
@@ -795,7 +795,7 @@ class canny_scoreboard extends uvm_scoreboard;
 
 
     // --------------------------------------------------------
-    // Nedostaju izlazne reci.
+    // Output words are missing.
     // --------------------------------------------------------
 
     if (
@@ -817,7 +817,7 @@ class canny_scoreboard extends uvm_scoreboard;
 
 
     // --------------------------------------------------------
-    // Broj poredjenih piksela nije ocekivan.
+    // Compared pixel count is not as expected.
     // --------------------------------------------------------
 
     if (
@@ -841,7 +841,7 @@ class canny_scoreboard extends uvm_scoreboard;
 
 
     // --------------------------------------------------------
-    // Zavrsni PASS ili FAIL.
+    // Final PASS or FAIL.
     // --------------------------------------------------------
 
     if (
