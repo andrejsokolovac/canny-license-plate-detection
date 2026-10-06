@@ -33,7 +33,7 @@ class canny_env extends uvm_env;
 
 
     // --------------------------------------------------------
-    // Preuzimanje zajednicke konfiguracije.
+    // Retrieve shared configuration.
     // --------------------------------------------------------
 
     if (
@@ -66,11 +66,11 @@ class canny_env extends uvm_env;
 
 
     // --------------------------------------------------------
-    // Prosledjivanje konfiguracije komponentama.
+    // Distribute configuration to components.
     //
-    // Agent prosledjuje cfg dalje driveru i monitoru.
-    // Scoreboard koristi golden edge piksele.
-    // Coverage koristi dimenzije slike i threshold vrednosti.
+    // The agent forwards cfg to the driver and monitor.
+    // The scoreboard uses golden edge pixels.
+    // Coverage uses image dimensions and threshold values.
     // --------------------------------------------------------
 
     uvm_config_db#(canny_config)::set(
@@ -98,7 +98,7 @@ class canny_env extends uvm_env;
 
 
     // --------------------------------------------------------
-    // Kreiranje komponenti.
+    // Create components.
     // --------------------------------------------------------
 
     agent =
@@ -123,7 +123,7 @@ class canny_env extends uvm_env;
 
 
     // --------------------------------------------------------
-    // Provera kreiranih komponenti.
+    // Validate created components.
     // --------------------------------------------------------
 
     if (
