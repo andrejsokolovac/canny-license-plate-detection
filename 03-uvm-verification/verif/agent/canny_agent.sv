@@ -60,9 +60,7 @@ class canny_agent extends uvm_agent;
     end
 
 
-    // Prosledjujemo istu konfiguraciju driveru i monitoru.
-    // Ovo obezbedjuje da obe komponente koriste isti vif,
-    // dimenzije slike, pragove i golden vektore.
+    // Share the agent configuration with the driver and monitor.
 
     uvm_config_db#(canny_config)::set(
       this,
@@ -152,12 +150,8 @@ class canny_agent extends uvm_agent;
   // ==========================================================
   // Connect phase
   //
-  // Monitor analysis port ce kasnije biti povezan sa:
-  //
-  //   scoreboard
-  //   coverage
-  //
-  // unutar canny_env.sv.
+  // The monitor analysis port is connected to the scoreboard
+  // and coverage components in canny_env.
   // ==========================================================
 
   virtual function void connect_phase(
