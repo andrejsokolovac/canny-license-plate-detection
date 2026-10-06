@@ -4,7 +4,7 @@
 #include <algorithm>
 
 std::vector<std::vector<int>> CannyEdge(const std::vector<std::vector<int>>& src, int lowThreshold, int highThreshold) {
-    // Gaussova filtracija
+    // Gaussian filtering
     std::vector<std::vector<int>> blurred(src.size(), std::vector<int>(src[0].size(), 0));
     const double kernel[5][5] = {
         {1, 4, 6, 4, 1},
@@ -26,7 +26,7 @@ std::vector<std::vector<int>> CannyEdge(const std::vector<std::vector<int>>& src
         }
     }
 
-    // Sobel operator za gradijente
+    // Sobel gradient operator
     std::vector<std::vector<int>> gradX(blurred.size(), std::vector<int>(blurred[0].size(), 0));
     std::vector<std::vector<int>> gradY(blurred.size(), std::vector<int>(blurred[0].size(), 0));
     const int sobelX[3][3] = {
@@ -55,7 +55,7 @@ std::vector<std::vector<int>> CannyEdge(const std::vector<std::vector<int>>& src
         }
     }
 
-    // Izračunaj magnitudu gradijenta
+    // Calculate gradient magnitude
     std::vector<std::vector<double>> magnitude(gradX.size(), std::vector<double>(gradX[0].size(), 0));
     for (size_t i = 0; i < gradX.size(); i++) {
         for (size_t j = 0; j < gradX[0].size(); j++) {
@@ -102,7 +102,7 @@ std::vector<std::vector<int>> CannyEdge(const std::vector<std::vector<int>>& src
         }
     }
 
-    // Histerezis
+    // Hysteresis
     std::vector<std::vector<int>> edges(thresholded.size(), std::vector<int>(thresholded[0].size(), 0));
     for (size_t i = 1; i < thresholded.size() - 1; i++) {
         for (size_t j = 1; j < thresholded[0].size() - 1; j++) {
