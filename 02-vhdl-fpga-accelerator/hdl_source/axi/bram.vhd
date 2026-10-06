@@ -6,9 +6,9 @@ use IEEE.MATH_REAL.ALL;
 entity bram is
     generic (
         WIDTH      : integer := 8;
-        --BRAM_SIZE  : integer := 307200  -- broj memorijskih lokacija
+        --BRAM_SIZE  : integer := 307200  -- number of memory locations
         BRAM_SIZE  : integer := 196608  -- broj memorijskih lokacija
-        --BRAM_SIZE  : integer := 12288  -- broj memorijskih lokacija
+        --BRAM_SIZE  : integer := 12288  -- number of memory locations
     );
     port (
         clka  : in  std_logic;
