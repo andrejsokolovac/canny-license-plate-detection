@@ -28,7 +28,7 @@ Hard::Hard(sc_core::sc_module_name name)
     interconnect_socket.register_b_transport(this, &Hard::b_transport);
 
     // ------------------------------------------------------------
-    // Povezivanje VHDL wrapper-a sa SystemC signalima
+    // Connect the VHDL wrapper to SystemC signals
     // ------------------------------------------------------------
 
     dut.clk(clk);
@@ -88,7 +88,7 @@ Hard::Hard(sc_core::sc_module_name name)
     dut.edge_doa(edge_doa_s);
 
     // ------------------------------------------------------------
-    // Početne vrednosti signala
+    // Initial signal values
     // ------------------------------------------------------------
 
     reset_s.write(SC_LOGIC_1);
@@ -106,7 +106,7 @@ Hard::Hard(sc_core::sc_module_name name)
     edge_doa_s.write(u8_to_lv8(0));
 
     // ------------------------------------------------------------
-    // Procesi bridge-a
+    // Bridge processes
     // ------------------------------------------------------------
 
     SC_THREAD(reset_thread);
@@ -130,7 +130,7 @@ Hard::~Hard()
 }
 
 // ------------------------------------------------------------
-// TLM komunikacija sa CPU/Interconnect strane
+// TLM communication from the CPU/interconnect side
 // ------------------------------------------------------------
 
 void Hard::b_transport(tlm::tlm_generic_payload& pl, sc_core::sc_time& offset)
@@ -231,7 +231,7 @@ void Hard::b_transport(tlm::tlm_generic_payload& pl, sc_core::sc_time& offset)
 }
 
 // ------------------------------------------------------------
-// Reset / start / done procesi
+// Reset / start / done processes
 // ------------------------------------------------------------
 
 void Hard::reset_thread()
@@ -259,7 +259,7 @@ void Hard::start_pulse_thread()
 	{
 		edge_mem[i]=0;
 	}
-        // Sacekaj pozitivan takt, pa digni start.
+        // Wait for a rising edge, then assert START.
 	while(reset_s.read() == SC_LOGIC_1)
 	{
 		wait(clk.posedge_event());
@@ -267,7 +267,7 @@ void Hard::start_pulse_thread()
 	wait(clk.posedge_event());
         start_s.write(SC_LOGIC_1);
 
-        // Start impuls traje jedan takt.
+        // The START pulse lasts one clock cycle.
         wait(clk.posedge_event());
         start_s.write(SC_LOGIC_0);
 
@@ -281,7 +281,7 @@ void Hard::done_monitor_thread()
     {
         wait(start_event);
 
-        // VHDL ready je u IDLE stanju 1, a tokom obrade treba da padne na 0.
+        // VHDL ready is high in IDLE and goes low while processing.
         do
         {
             wait(clk.posedge_event());
@@ -290,7 +290,7 @@ void Hard::done_monitor_thread()
 
         std::cout << "[HARD_BRIDGE] VHDL IP je zapoceo obradu." << std::endl;
 
-        // Cekamo da se ready vrati na 1.
+        // Wait for ready to return high.
         do
         {
             wait(clk.posedge_event());
@@ -317,7 +317,7 @@ void Hard::done_monitor_thread()
 }
 
 // ------------------------------------------------------------
-// TLM pristup postojecem SystemC BRAM-u
+// TLM access to the SystemC BRAM
 // ------------------------------------------------------------
 
 void Hard::write_bram(sc_dt::uint64 addr, unsigned char val)
@@ -367,11 +367,9 @@ unsigned char Hard::read_bram(sc_dt::uint64 addr)
 }
 
 // ------------------------------------------------------------
-// BRAM thread-ovi
-// Svi rade na pozitivnu ivicu clock-a i glume sinhroni BRAM.
-// Logika je ista kao u tvom bram.vhd:
-//   ako je EN = 1, prvo se cita memorija,
-//   zatim ako je WE = 1, upisuje se nova vrednost.
+// BRAM threads
+// All threads run on the rising clock edge and model synchronous BRAM behavior.
+// When EN is asserted, the current value is read first; if WE is also asserted, the new value is then written.
 // ------------------------------------------------------------
 
 void Hard::input_bram_thread()
@@ -575,7 +573,7 @@ void Hard::edge_bram_thread()
 }
 
 // ------------------------------------------------------------
-// Konverzije
+// Conversions
 // ------------------------------------------------------------
 
 sc_dt::sc_lv<8> Hard::u8_to_lv8(std::uint8_t v)
