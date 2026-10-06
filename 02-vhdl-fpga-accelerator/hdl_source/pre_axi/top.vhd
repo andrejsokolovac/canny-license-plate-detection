@@ -19,7 +19,7 @@ entity top is
         cols : in std_logic_vector(9 downto 0);
 
         ----------------------------------------------------------------
-        -- TB kontrola INPUT BRAM
+        -- TB control of INPUT BRAM
         ----------------------------------------------------------------
         tb_input_en   : in std_logic;
         tb_input_we   : in std_logic;
@@ -27,42 +27,42 @@ entity top is
         tb_input_din  : in std_logic_vector(7 downto 0);
 
         ----------------------------------------------------------------
-        -- TB ?itanje GAUSS BRAM
+        -- TB read access to GAUSS BRAM
         ----------------------------------------------------------------
         tb_gauss_en   : in std_logic;
         tb_gauss_addr : in std_logic_vector(ADDR_WIDTH-1 downto 0);
         tb_gauss_dout : out std_logic_vector(7 downto 0);
 
         ----------------------------------------------------------------
-        -- TB ?itanje MAG BRAM
+        -- TB read access to MAG BRAM
         ----------------------------------------------------------------
         tb_mag_en   : in std_logic;
         tb_mag_addr : in std_logic_vector(ADDR_WIDTH-1 downto 0);
         tb_mag_dout : out std_logic_vector(15 downto 0);
 
         ----------------------------------------------------------------
-        -- TB ?itanje DIR BRAM
+        -- TB read access to DIR BRAM
         ----------------------------------------------------------------
         tb_dir_en   : in std_logic;
         tb_dir_addr : in std_logic_vector(ADDR_WIDTH-1 downto 0);
         tb_dir_dout : out std_logic_vector(7 downto 0);
 
         ----------------------------------------------------------------
-        -- TB ?itanje NMS BRAM
+        -- TB read access to NMS BRAM
         ----------------------------------------------------------------
         tb_nms_en   : in std_logic;
         tb_nms_addr : in std_logic_vector(ADDR_WIDTH-1 downto 0);
         tb_nms_dout : out std_logic_vector(15 downto 0);
 
         ----------------------------------------------------------------
-        -- TB ?itanje THRESH BRAM
+        -- TB read access to THRESH BRAM
         ----------------------------------------------------------------
         tb_thresh_en   : in std_logic;
         tb_thresh_addr : in std_logic_vector(ADDR_WIDTH-1 downto 0);
         tb_thresh_dout : out std_logic_vector(7 downto 0);
 
         ----------------------------------------------------------------
-        -- TB ?itanje EDGE BRAM
+        -- TB read access to EDGE BRAM
         ----------------------------------------------------------------
         tb_edge_en   : in std_logic;
         tb_edge_addr : in std_logic_vector(ADDR_WIDTH-1 downto 0);
@@ -462,7 +462,7 @@ begin
         );
 
     --------------------------------------------------------------------
-    -- TB izlazi
+    -- TB outputs
     --------------------------------------------------------------------
     tb_gauss_dout  <= gauss_doa;
     tb_mag_dout    <= mag_doa;
