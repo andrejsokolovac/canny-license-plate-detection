@@ -14,7 +14,7 @@ package canny_agent_pkg;
   import canny_config_pkg::*;
 
 
-  // Redosled je vazan:
+  // Include order follows class dependencies:
   //
   // 1. sequence item
   // 2. driver
