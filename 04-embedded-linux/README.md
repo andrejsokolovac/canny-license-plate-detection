@@ -94,7 +94,7 @@ Depending on the system configuration, the script performs operations such as:
 - checking the created character devices;
 - starting the user-space application;
 - displaying the verification result;
-- cleaning up loaded modules and temporary resources.
+- validating the generated hardware output file.
 
 ## Directory Structure
 
