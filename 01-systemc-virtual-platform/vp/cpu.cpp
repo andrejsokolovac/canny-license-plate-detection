@@ -17,10 +17,10 @@ Cpu::Cpu(sc_core::sc_module_name name, char** strings, int argv, Hard* hard_ptr)
     {
         input_image_path = strings[1];
         
-        // Izvlačenje imena fajla iz putanje
+        // Extract the file name from the path
         std::string filename = fs::path(input_image_path).filename().string();
 
-        // Kreiranje putanje za izlaznu sliku
+        // Create the output image path
         output_image_path = (fs::current_path() / filename).string();
     }
     else
@@ -47,10 +47,10 @@ void Cpu::process()
 {
     wait(SC_ZERO_TIME);
 
-    // Učitavanje slike
+    // Load image
     Mat img = load_image();
     
-    // Ispisujemo ulaznu grayscale sliku u 1D formatu
+    // Optional dump of the input grayscale image in 1D format
     /*std::ofstream input_file("/home/andrej/output/input_image.txt");
 	for (int i = 0; i < image_rows; ++i) {
     		for (int j = 0; j < image_cols; ++j) {
@@ -69,19 +69,19 @@ void Cpu::process()
     for (int i = 0; i < image_rows * image_cols; ++i)
     send_to_bram(i, img_data[i]);
     
-    // Slanje broja redova HARD-u
+    // Send the row count to the hardware model
     write_hard(ADDR_ROWS, image_rows);
     std::cout << "[CPU] Sent image_rows (" << image_rows << ") to HARD." << std::endl;
 
-    // Slanje broja kolona HARD-u
+    // Send the column count to the hardware model
     write_hard(ADDR_COLS, image_cols);
     std::cout << "[CPU] Sent image_cols (" << image_cols << ") to HARD." << std::endl;
 
-    // Slanje komande START HARD-u
+    // Send the START command to the hardware model
     write_hard(ADDR_START, 1);
     std::cout << "[CPU] Sent START signal to HARD." << std::endl;
        
-    // Cekanje da HARD zavrsi obradu
+    // Wait for the hardware model to finish processing
     ready = read_hard(ADDR_READY);
     std::cout << "[CPU] Waiting for HARD to complete processing... READY = " << ready << std::endl;
     wait(hard->done_event);
@@ -96,7 +96,7 @@ void Cpu::process()
     for (int j = 0; j < image_cols; ++j)
     output_img.at<uchar>(i, j) = result[i * image_cols + j];
     
-    // Ispisujemo izlaznu Canny edge sliku u 1D formatu
+    // Optional dump of the Canny edge output in 1D format
     /*std::ofstream output_file("/home/andrej/output/canny_output.txt");
 	for (int i = 0; i < image_rows; ++i) {
     		for (int j = 0; j < image_cols; ++j) {
@@ -106,24 +106,24 @@ void Cpu::process()
     output_file.close();
     std::cout << "[CPU] Izlazna Canny edge slika sačuvana kao 1D niz u canny_output.txt" << std::endl;*/
 
-    // Čuvanje rezultata
+    // Save result
     save_image(output_img);
 
     std::cout << "CPU: Canny edge detection finished." << std::endl;	
     
-    // Prepoznavanje tablice i čuvanje slike sa uokvirenom tablicom
+    // Detect the license plate and save the image with a bounding box
 
-    // 1. Pronađi konture na Canny edge slici
+    // 1. Find contours in the Canny edge image
     std::vector<std::vector<cv::Point>> contours;
     std::vector<cv::Vec4i> hierarchy;
     cv::findContours(output_img, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
 
-    // 2. Sortiraj konture po površini (najveća prva)
+    // 2. Sort contours by area (largest first)
     std::sort(contours.begin(), contours.end(), [](const std::vector<cv::Point>& a, const std::vector<cv::Point>& b) {
         return cv::contourArea(a, false) > cv::contourArea(b, false);
     });
 
-    // 3. Pronađi konturu tablice
+    // 3. Find the license-plate contour
     double minArea = 0.0;
     double maxArea = 10000.0;
     std::vector<cv::Point> plateContour;
@@ -137,13 +137,13 @@ void Cpu::process()
         }
     }
 
-    // 4. Učitaj originalnu sliku i uokviri tablicu
+    // 4. Load the original image and draw the license-plate bounding box
     cv::Mat original = load_original();
     if (!plateContour.empty() && !original.empty()) {
         cv::Rect box = cv::boundingRect(plateContour);
         cv::rectangle(original, box, cv::Scalar(0, 255, 0), 3);
         
-        // 5. Čuvanje slike sa uokvirenom tablicom
+        // 5. Save the image with the detected license plate
         std::string final_output = (fs::current_path() / "image_with_plate.png").string();
         cv::imwrite(final_output, original);
         std::cout << "[CPU] Tablica pronađena i slika sačuvana kao " << final_output << std::endl;
@@ -169,18 +169,18 @@ cv::Mat Cpu::load_image()
     
     std::cout << "Loaded image size: " << img.cols << "x" << img.rows << std::endl;
 
-    // Ako je slika veća od maksimalnih dimenzija BRAM-a, smanjujemo je
+    // Resize the image if it exceeds the maximum BRAM dimensions
     if (img.cols > MAX_IMAGE_WIDTH || img.rows > MAX_IMAGE_HEIGHT)
     {
         std::cout << "Resizing image to " << MAX_IMAGE_WIDTH << "x" << MAX_IMAGE_HEIGHT << std::endl;
         cv::resize(img, img, cv::Size(MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT));
     }
     
-    //Postavljamo `image_rows` i `image_cols`
+    //Set `image_rows` and `image_cols`
     image_cols = img.cols;
     image_rows = img.rows;
     
-    //Dodajemo provere pre vraćanja slike
+    //Validate the image before returning it
     if (img.cols <= 0 || img.rows <= 0)
     {
         std::cerr << "Error: Image has invalid dimensions after resizing!" << std::endl;
@@ -203,18 +203,18 @@ cv::Mat Cpu::load_original()
     
     std::cout << "Loaded image size: " << img.cols << "x" << img.rows << std::endl;
 
-    // Ako je slika veća od maksimalnih dimenzija BRAM-a, smanjujemo je
+    // Resize the image if it exceeds the maximum BRAM dimensions
     if (img.cols > MAX_IMAGE_WIDTH || img.rows > MAX_IMAGE_HEIGHT)
     {
         std::cout << "Resizing image to " << MAX_IMAGE_WIDTH << "x" << MAX_IMAGE_HEIGHT << std::endl;
         cv::resize(img, img, cv::Size(MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT));
     }
     
-    //Postavljamo `image_rows` i `image_cols`
+    //Set `image_rows` and `image_cols`
     image_cols = img.cols;
     image_rows = img.rows;
     
-    //Dodajemo provere pre vraćanja slike
+    //Validate the image before returning it
     if (img.cols <= 0 || img.rows <= 0)
     {
         std::cerr << "Error: Image has invalid dimensions after resizing!" << std::endl;
@@ -231,7 +231,7 @@ void Cpu::save_image(const cv::Mat& output_image) {
         return;
     }
 
-    // Sačuvaj PNG sliku
+    // Save the PNG image
     cv::imwrite(output_image_path, output_image);
     std::cout << "[CPU] Slika sačuvana" << std::endl;
     
