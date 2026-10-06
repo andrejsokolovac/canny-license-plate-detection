@@ -15,22 +15,22 @@ using namespace cv;
 class Cpu : public sc_core::sc_module
 {
 public:
-    // Inicijator socket za komunikaciju sa interkonektom
+    // Initiator socket for communication with the interconnect
     tlm_utils::simple_initiator_socket<Cpu> interconnect_socket;
     
     SC_HAS_PROCESS(Cpu);
 
-    // Konstruktor i destruktor
+    // Constructor and destructor
     Cpu(sc_core::sc_module_name name, char** strings,int argv, Hard* hard_ptr);
 
     ~Cpu();
     
     Hard* hard;
 
-    // Glavna funkcija procesa
+    // Main process function
     void process();
     
-    // **SC_EVENTS za sinhronizaciju između CPU-a i IP-a**
+    // SC events for synchronization between the CPU and IP
     sc_event done_event; 
 
 private:
@@ -43,20 +43,20 @@ private:
 
     sc_core::sc_time offset;
 
-    // Metode za učitavanje i čuvanje slike
+    // Image load/save methods
     cv::Mat load_image();
     cv::Mat load_original();
     void save_image(const cv::Mat& output_image);
 
-    // Metode za komunikaciju sa BRAM-om
+    // BRAM communication methods
     void send_to_bram(sc_uint<64> addr, unsigned char val);
     void receive_from_bram(sc_uint<64> addr, unsigned char *all_data, int length);
 
-    // Metode za komunikaciju sa HARD modulom
+    // Hardware-module communication methods
     void write_hard(sc_dt::uint64 addr, int value);
     int read_hard(sc_dt::uint64 addr);
 
-    // Debug metode
+    // Debug methods
     void print_status();
 
 };
