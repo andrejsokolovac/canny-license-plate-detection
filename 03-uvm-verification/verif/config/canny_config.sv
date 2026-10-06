@@ -6,27 +6,7 @@ import uvm_pkg::*;
 
 
 // ============================================================
-// Konfiguracija Canny testa
-//
-// Test 1:
-//   grayscale_full.txt
-//   final_edge_full.txt
-//
-// Test 2:
-//   grayscale_full2.txt
-//   final_edge_full2.txt
-//
-// Test 3:
-//   grayscale_full_black.txt
-//   final_edge_black.txt
-//
-// Test 4:
-//   grayscale_full_half.txt
-//   final_edge_full_half.txt
-//
-// Svi testovi koriste:
-//   LOW  = 50
-//   HIGH = 100
+// Shared configuration and golden-vector data for Canny UVM tests.
 // ============================================================
 
 class canny_config extends uvm_object;
