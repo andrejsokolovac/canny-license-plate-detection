@@ -310,12 +310,12 @@ class canny_base_test extends uvm_test;
     end
 
 
-    // Sekvenca koristi isti konfiguracioni objekat kao test.
+    // Use the shared test configuration for the sequence.
 
     smoke_seq.cfg = cfg;
 
 
-    // Pokretanje sekvence na sequenceru unutar agenta.
+    // Start the sequence on the agent sequencer.
 
     smoke_seq.start(
       env.agent.sequencer
@@ -443,12 +443,12 @@ class canny_black_test extends canny_base_test;
 endclass
 
 // ============================================================
-// Test 3: polu crna polu bela slika
+// Test 4: half-black, half-white image
 //
 // Koristi:
 //
 //   grayscale_full_half.txt
-//   final_edge_half.txt
+//   final_edge_full_half.txt
 //
 // Pragovi:
 //
