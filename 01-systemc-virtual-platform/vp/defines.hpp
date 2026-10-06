@@ -20,7 +20,7 @@ typedef tlm::tlm_base_protocol_types::tlm_payload_type pl_t;
 typedef tlm::tlm_base_protocol_types::tlm_phase_type ph_t;
 
 
-// Adresni opseg BRAM memorije
+// BRAM address range
 #define VP_ADDR_BRAM_L 0x00000000  // Početna adresa BRAM memorije
 #define VP_ADDR_BRAM_H 0x00000000 + BRAM_SIZE   // Krajnja adresa BRAM memorije 
 
@@ -28,16 +28,16 @@ typedef tlm::tlm_base_protocol_types::tlm_phase_type ph_t;
 #define VP_ADDR_IP_HARD_H 0x4000000F
 
 
-// Definisanje kašnjenja za TLM transakcije
+// TLM transaction delay
 #define DELAY 10 // 10 ns kašnjenja u simulaciji
 
-// Definisanje velicine BRAMA
+// BRAM size
 #define BRAM_SIZE (512 * 384) 
 
 #define MAX_IMAGE_WIDTH 512
 #define MAX_IMAGE_HEIGHT 384
 
-// Registri u HARD
+// Hardware registers
 #define ADDR_ROWS 0x00
 #define ADDR_COLS 0x01
 #define ADDR_START 0x02
