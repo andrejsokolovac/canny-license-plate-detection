@@ -1,7 +1,7 @@
 # ============================================================
 # CANNY AXI FULL SYSTEM BUILD SCRIPT
-# Automatsko pakovanje IP-a, povezivanje sistema,
-# sinteza, implementacija, bitstream i export .xsa fajla
+# Automated IP packaging and system integration,
+# synthesis, implementation, bitstream generation, and .xsa export
 # Target board: Zybo, xc7z010clg400-1
 # Vivado 2020.2
 # ============================================================
@@ -24,7 +24,7 @@ set top_name     "canny_axi_v1_0"
 set bd_name      "design_1"
 set ip_vlnv      "user.org:user:canny_axi:1.0"
 
-# Address map, isto kao sto smo koristili u Vitis-u
+# Address map used by the Vitis software
 set CANNY_S00_BASE 0x43C00000
 set CANNY_S00_RANGE 0x00010000
 
@@ -172,10 +172,10 @@ if {[catch {
 create_bd_cell -type ip -vlnv $ip_vlnv canny_axi_0
 
 # ------------------------------------------------------------
-# IMPORTANT FIX:
+# AXI ID width compatibility:
 # PS7 AXI interconnect can generate 12-bit AXI ID width.
-# Our S01 AXI-Full interface originally has ID width 1.
-# This makes them compatible before validate_bd_design.
+# The S01 AXI-Full interface uses ID width 1.
+# Set the interface width before validate_bd_design to keep the connection compatible.
 # ------------------------------------------------------------
 if {[catch {
     set_property -dict [list CONFIG.C_S01_AXI_ID_WIDTH {12}] [get_bd_cells canny_axi_0]
@@ -212,7 +212,7 @@ puts "============================================================"
 puts "STEP 4: ASSIGNING ADDRESSES"
 puts "============================================================"
 
-# Explicit address assignment, same as Vitis test
+# Explicit address assignment matching the Vitis software
 assign_bd_address -offset $CANNY_S00_BASE -range $CANNY_S00_RANGE \
     -target_address_space [get_bd_addr_spaces processing_system7_0/Data] \
     [get_bd_addr_segs canny_axi_0/s00_axi/reg0] -force
