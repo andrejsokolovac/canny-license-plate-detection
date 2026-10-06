@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    // Čitanje slike sa prosleđene putanje
+    // Load the image from the provided path
     string imagePath = argv[1];
     cv::Mat img = cv::imread(imagePath);
 
@@ -40,12 +40,12 @@ int main(int argc, char* argv[]) {
     std::string final_output = (fs::current_path() / "image_with_plate.png").string();
     cv::imwrite(final_output, edgeImg);
     
-    // Nađi konture
+    // Find contours
     std::vector<std::vector<cv::Point>> contours;
     std::vector<cv::Vec4i> hierarchy;
     cv::findContours(edgeImg, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
 
-    // Sortiraj konture
+    // Sort contours
     std::sort(contours.begin(), contours.end(), [](const std::vector<cv::Point>& a, const std::vector<cv::Point>& b) {
         return cv::contourArea(a, false) > cv::contourArea(b, false);
     });
@@ -54,10 +54,10 @@ int main(int argc, char* argv[]) {
     double maxArea = 30000.0; // Maksimalna povrsina za konturu tablice			
     std::vector<cv::Point> location;
     for (size_t i = 0; i < contours.size(); i++) {
-        // Aproksimacija poligona
+        // Polygon approximation
         std::vector<cv::Point> approx;
         cv::approxPolyDP(contours[i], approx, 10, true);
-        // Dodatni kriterijumi : kontura sa 4 tacke i odgovarajuce velicine
+        // Additional criteria: four-point contour with suitable dimensions
         double area = cv::contourArea(approx);
         if (approx.size() == 4 && area > minArea && area < maxArea) {
             location = approx;
@@ -65,16 +65,16 @@ int main(int argc, char* argv[]) {
         }
     }
 	
-    // Ako je tablica pronađena
+    // If a license plate is found
     if (!location.empty()) {
 
-        // Izreži područje sa tablicom
+        // Crop the license-plate region
         cv::Rect boundingBox = cv::boundingRect(location);
 
-        // Uokvirivanje tablice u originalnoj slici
+        // Draw the license-plate bounding box on the original image
         cv::rectangle(img, boundingBox, cv::Scalar(0, 255, 0), 3);
 
-        // Prikazi originalnu sliku sa uokvirenom tablicom
+        // Display the original image with the detected license plate
         cv::imshow("Original sa Uokvirenom Tablicom", img);
         cv::waitKey(0);
     } else {
