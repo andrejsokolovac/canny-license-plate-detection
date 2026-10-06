@@ -14,17 +14,17 @@ using namespace sc_core;
 
 class Interconnect : public sc_module {
 public:
-    // Konstruktor i destruktor
+    // Constructor and destructor
     Interconnect(sc_module_name name);
     ~Interconnect();
 
-    // TLM socketi
+    // TLM sockets
     tlm_utils::simple_initiator_socket<Interconnect> bram_socket;
     tlm_utils::simple_initiator_socket<Interconnect> hard_socket;
     tlm_utils::simple_target_socket<Interconnect> cpu_socket;
 
 protected:
-    // Metoda za obradu TLM transakcija
+    // TLM transaction handler
     pl_t pl;
     sc_core::sc_time offset;
     void b_transport(tlm::tlm_generic_payload &pl, sc_time &offset);
